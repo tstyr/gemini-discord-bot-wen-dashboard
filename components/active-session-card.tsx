@@ -25,11 +25,13 @@ export function ActiveSessionCard({
   const progress = positionMs && durationMs ? (positionMs / durationMs) * 100 : 0;
 
   const sendCommand = async (command: string, payload?: any) => {
-    const { error } = await supabase.from("command_queue").insert({
-      command,
-      payload: { guild_id: guildId, ...payload },
-      status: 'pending',
-    });
+    const { error } = await supabase
+      .from("command_queue")
+      .insert({
+        command,
+        payload: { guild_id: guildId, ...payload },
+        status: 'pending',
+      } as any);
 
     if (error) {
       toast.error("Failed to send command");
