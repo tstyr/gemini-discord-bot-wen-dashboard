@@ -1,0 +1,124 @@
+# Bot Dashboard
+
+Discord Bot管理コンソール - TrueNAS Scale風デザイン
+
+## 技術スタック
+
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS
+- **UI Components:** Shadcn UI + Tremor
+- **Database:** Supabase (PostgreSQL + Realtime)
+- **Hosting:** Vercel
+- **Infrastructure:** Koyeb API
+
+## セットアップ
+
+### 1. 依存関係のインストール
+
+```bash
+npm install
+```
+
+### 2. 環境変数の設定
+
+`.env.local.example` を `.env.local` にコピーして、必要な値を設定してください。
+
+```bash
+cp .env.local.example .env.local
+```
+
+必要な環境変数:
+- `NEXT_PUBLIC_SUPABASE_URL`: SupabaseプロジェクトURL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase匿名キー
+- `KOYEB_API_TOKEN`: Koyeb APIトークン
+- `KOYEB_SERVICE_ID`: KoyebサービスID
+
+### 3. Supabaseデータベースのセットアップ
+
+Supabaseプロジェクトで以下のSQLを実行してください:
+
+```sql
+-- システムメトリクス
+CREATE TABLE system_stats (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  cpu_usage NUMERIC, ram_rss NUMERIC, ram_heap NUMERIC,
+  ping_gateway INT, ping_lavalink INT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- アクティブセッション（音楽再生状況）
+CREATE TABLE active_sessions (
+  guild_id TEXT PRIMARY KEY,
+  track_title TEXT, position_ms BIGINT, duration_ms BIGINT,
+  is_playing BOOLEAN, updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 遠隔命令キュー
+CREATE TABLE command_queue (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  command TEXT NOT NULL, payload JSONB,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Botログ
+CREATE TABLE bot_logs (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  level TEXT, message TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### 4. Supabase Realtimeの有効化
+
+Supabaseダッシュボードで以下のテーブルのRealtimeを有効にしてください:
+- `system_stats`
+- `active_sessions`
+- `command_queue`
+- `bot_logs`
+
+### 5. 開発サーバーの起動
+
+```bash
+npm run dev
+```
+
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
+
+## ページ構成
+
+### Dashboard (`/dashboard`)
+- CPU/RAM/Pingのリアルタイムメトリクス表示
+- アクティブな音楽セッション管理
+- ライブコンソールログ
+
+### Analytics (`/analytics`)
+- Gemini API使用量の可視化
+- 人気曲ランキング
+
+### Infrastructure (`/infrastructure`)
+- Koyebサービスステータス
+- デプロイ管理
+
+### Settings (`/settings`)
+- Bot設定の編集
+
+## デプロイ
+
+### Vercelへのデプロイ
+
+```bash
+npm run build
+```
+
+Vercelダッシュボードで環境変数を設定してデプロイしてください。
+
+## 通信フロー
+
+1. ダッシュボードのボタン操作 → `command_queue` テーブルに `INSERT`
+2. Bot側が `command_queue` を購読して命令を実行
+3. Bot側が実行結果を `command_queue` の `status` を更新
+4. ダッシュボードがRealtime経由で通知を受け取りトースト表示
+
+## ライセンス
+
+MIT
