@@ -14,16 +14,27 @@ interface LogEntry {
 
 export function LiveConsole() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const { data } = await supabase
-        .from("bot_logs")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      
-      if (data) setLogs(data);
+      try {
+        const { data, error } = await supabase
+          .from("bot_logs")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(50);
+        
+        if (error) {
+          console.error("Error fetching logs:", error);
+        } else if (data) {
+          setLogs(data);
+        }
+      } catch (err) {
+        console.error("Exception fetching logs:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchLogs();
@@ -64,17 +75,23 @@ export function LiveConsole() {
       </CardHeader>
       <CardContent>
         <div className="bg-slate-950 rounded-md p-4 h-64 overflow-y-auto font-mono text-xs">
-          {logs.map((log) => (
-            <div key={log.id} className="mb-2 flex items-start gap-2">
-              <span className="text-slate-500 flex-shrink-0">
-                {new Date(log.created_at).toLocaleTimeString()}
-              </span>
-              <Badge variant={getLevelColor(log.level)} className="flex-shrink-0">
-                {log.level || "LOG"}
-              </Badge>
-              <span className="text-slate-300">{log.message}</span>
-            </div>
-          ))}
+          {loading ? (
+            <div className="text-slate-500 text-center py-8">Loading logs...</div>
+          ) : logs.length === 0 ? (
+            <div className="text-slate-500 text-center py-8">No logs available</div>
+          ) : (
+            logs.map((log) => (
+              <div key={log.id} className="mb-2 flex items-start gap-2">
+                <span className="text-slate-500 flex-shrink-0">
+                  {new Date(log.created_at).toLocaleTimeString()}
+                </span>
+                <Badge variant={getLevelColor(log.level)} className="flex-shrink-0">
+                  {log.level || "LOG"}
+                </Badge>
+                <span className="text-slate-300">{log.message}</span>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

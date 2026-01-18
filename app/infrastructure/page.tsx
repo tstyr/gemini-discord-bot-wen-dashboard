@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,29 @@ import { toast } from "sonner";
 
 export default function InfrastructurePage() {
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<any>(null);
+  const [fetchingStatus, setFetchingStatus] = useState(true);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch("/api/koyeb/status");
+        if (response.ok) {
+          const data = await response.json();
+          setStatus(data);
+        }
+      } catch (error) {
+        console.error("Error fetching Koyeb status:", error);
+      } finally {
+        setFetchingStatus(false);
+      }
+    };
+
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 30000); // Refresh every 30s
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleRedeploy = async () => {
     setLoading(true);
@@ -45,18 +68,32 @@ export default function InfrastructurePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Status</span>
-              <Badge variant="success">Running</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Deploy ID</span>
-              <span className="text-slate-200 font-mono text-sm">abc123def456</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Instance Type</span>
-              <span className="text-slate-200">nano</span>
-            </div>
+            {fetchingStatus ? (
+              <div className="text-slate-400 text-sm">Loading status...</div>
+            ) : status ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Status</span>
+                  <Badge variant={status.status === "healthy" ? "success" : "secondary"}>
+                    {status.status || "Unknown"}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Deploy ID</span>
+                  <span className="text-slate-200 font-mono text-sm">
+                    {status.deployment_id?.substring(0, 12) || "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Instance Type</span>
+                  <span className="text-slate-200">{status.instance_type || "nano"}</span>
+                </div>
+              </>
+            ) : (
+              <div className="text-slate-400 text-sm">
+                Unable to fetch status. Check API configuration.
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -68,18 +105,30 @@ export default function InfrastructurePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Region</span>
-              <span className="text-slate-200">fra (Frankfurt)</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Build Time</span>
-              <span className="text-slate-200">2m 34s</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Last Deploy</span>
-              <span className="text-slate-200">2 hours ago</span>
-            </div>
+            {fetchingStatus ? (
+              <div className="text-slate-400 text-sm">Loading info...</div>
+            ) : status ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Region</span>
+                  <span className="text-slate-200">{status.region || "fra (Frankfurt)"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Build Time</span>
+                  <span className="text-slate-200">{status.build_time || "N/A"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Last Deploy</span>
+                  <span className="text-slate-200">
+                    {status.last_deploy ? new Date(status.last_deploy).toLocaleString() : "N/A"}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="text-slate-400 text-sm">
+                Unable to fetch info. Check API configuration.
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
