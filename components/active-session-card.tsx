@@ -28,6 +28,7 @@ export function ActiveSessionCard({
     const { error } = await supabase.from("command_queue").insert({
       command,
       payload: { guild_id: guildId, ...payload },
+      status: 'pending',
     });
 
     if (error) {
