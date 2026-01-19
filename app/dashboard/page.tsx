@@ -86,6 +86,7 @@ export default function DashboardPage() {
       fetchSessions();
     }, 10000); // 10秒 = 10000ミリ秒
 
+    // Realtime subscriptions
     const statsChannel = supabase
       .channel("system_stats_changes")
       .on(
@@ -107,11 +108,6 @@ export default function DashboardPage() {
         }
       )
       .subscribe();
-
-    const interval = setInterval(() => {
-      fetchStats();
-      fetchSessions();
-    }, 5000);
 
     return () => {
       clearInterval(interval);
