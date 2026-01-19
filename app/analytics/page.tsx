@@ -106,8 +106,8 @@ export default function AnalyticsPage() {
 
     fetchAnalytics();
 
-    // 30秒ごとに更新
-    const interval = setInterval(fetchAnalytics, 30000);
+    // 10秒ごとに自動更新
+    const interval = setInterval(fetchAnalytics, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -126,6 +126,7 @@ export default function AnalyticsPage() {
       <div>
         <h1 className="text-3xl font-bold text-slate-100">AI & Music Analytics</h1>
         <p className="text-slate-400 mt-1">Usage statistics and trends</p>
+        <p className="text-xs text-slate-500 mt-1">Auto-updates every 10 seconds</p>
         {debugInfo && (
           <p className="text-xs text-slate-500 mt-2 font-mono">Debug: {debugInfo}</p>
         )}

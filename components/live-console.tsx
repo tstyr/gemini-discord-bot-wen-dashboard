@@ -37,8 +37,13 @@ export function LiveConsole() {
       }
     };
 
+    // 初回取得
     fetchLogs();
 
+    // 10秒ごとに自動更新
+    const interval = setInterval(fetchLogs, 10000);
+
+    // Realtime subscription
     const channel = supabase
       .channel("bot_logs_changes")
       .on(
@@ -51,6 +56,7 @@ export function LiveConsole() {
       .subscribe();
 
     return () => {
+      clearInterval(interval);
       supabase.removeChannel(channel);
     };
   }, []);

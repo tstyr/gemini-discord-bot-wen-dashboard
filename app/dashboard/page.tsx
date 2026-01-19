@@ -76,8 +76,15 @@ export default function DashboardPage() {
       }
     };
 
+    // 初回データ取得
     fetchStats();
     fetchSessions();
+
+    // 10秒ごとに自動更新
+    const interval = setInterval(() => {
+      fetchStats();
+      fetchSessions();
+    }, 10000); // 10秒 = 10000ミリ秒
 
     const statsChannel = supabase
       .channel("system_stats_changes")
@@ -118,6 +125,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold text-slate-100">Dashboard</h1>
         <p className="text-slate-400 mt-1">Bot infrastructure overview</p>
+        <p className="text-xs text-slate-500 mt-1">Auto-updates every 10 seconds</p>
       </div>
 
       {error && (

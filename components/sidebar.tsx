@@ -11,15 +11,16 @@ import {
   ChevronLeft, 
   ChevronRight,
   MessageSquare,
-  ListMusic
+  ListMusic,
+  BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: Music, label: "Analytics", href: "/analytics" },
-  { icon: MessageSquare, label: "会話ログ", href: "/dashboard/chat-logs" },
-  { icon: ListMusic, label: "音楽ログ", href: "/dashboard/music-logs" },
+  { icon: BarChart3, label: "Analytics", href: "/analytics" },
+  { icon: MessageSquare, label: "Chat History", href: "/dashboard/chat" },
+  { icon: ListMusic, label: "Music History", href: "/dashboard/music" },
   { icon: Server, label: "Infrastructure", href: "/infrastructure" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
