@@ -45,6 +45,9 @@ cp .env.local.example .env.local
 - `gemini_usage`: Gemini API使用統計（リクエスト数、トークン数）
 - `music_history`: 音楽再生履歴
 
+**テストデータの挿入（オプション）:**
+ダッシュボードの動作確認用に、`database-sample-data.sql` を実行してサンプルデータを挿入できます。
+
 ### 4. Supabase Realtimeの有効化
 
 Supabaseダッシュボードで以下のテーブルのRealtimeを有効にしてください:

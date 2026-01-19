@@ -20,6 +20,7 @@ export default function AnalyticsPage() {
   const [geminiData, setGeminiData] = useState<GeminiDailyStats[]>([]);
   const [topTracks, setTopTracks] = useState<TopTrack[]>([]);
   const [loading, setLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string>("");
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -33,6 +34,14 @@ export default function AnalyticsPage() {
           .select("*")
           .gte("created_at", sevenDaysAgo.toISOString())
           .order("created_at", { ascending: true });
+
+        if (geminiError) {
+          console.error("Gemini error:", geminiError);
+          setDebugInfo(`Gemini Error: ${geminiError.message}`);
+        } else {
+          console.log("Gemini data fetched:", geminiUsage?.length || 0, "records");
+          setDebugInfo(`Fetched ${geminiUsage?.length || 0} Gemini records`);
+        }
 
         if (!geminiError && geminiUsage) {
           // 日付ごとにグループ化
@@ -63,6 +72,14 @@ export default function AnalyticsPage() {
           .order("created_at", { ascending: false })
           .limit(1000);
 
+        if (musicError) {
+          console.error("Music error:", musicError);
+          setDebugInfo((prev) => `${prev} | Music Error: ${musicError.message}`);
+        } else {
+          console.log("Music data fetched:", musicHistory?.length || 0, "records");
+          setDebugInfo((prev) => `${prev} | ${musicHistory?.length || 0} music records`);
+        }
+
         if (!musicError && musicHistory) {
           // トラックごとに再生回数をカウント
           const trackCounts: { [key: string]: number } = {};
@@ -81,6 +98,7 @@ export default function AnalyticsPage() {
         }
       } catch (error) {
         console.error("Error fetching analytics:", error);
+        setDebugInfo(`Exception: ${error instanceof Error ? error.message : "Unknown error"}`);
       } finally {
         setLoading(false);
       }
@@ -108,6 +126,9 @@ export default function AnalyticsPage() {
       <div>
         <h1 className="text-3xl font-bold text-slate-100">AI & Music Analytics</h1>
         <p className="text-slate-400 mt-1">Usage statistics and trends</p>
+        {debugInfo && (
+          <p className="text-xs text-slate-500 mt-2 font-mono">Debug: {debugInfo}</p>
+        )}
       </div>
 
       <Card>
