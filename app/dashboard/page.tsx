@@ -41,15 +41,18 @@ export default function DashboardPage() {
           .from("system_stats")
           .select("*")
           .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
 
         if (error) {
           console.error("Error fetching stats:", error);
           setError(`${error.message} (Code: ${error.code || 'unknown'})`);
-        } else if (data) {
-          setStats(data);
+        } else if (data && data.length > 0) {
+          setStats(data[0]);
           setError(null); // Clear error on success
+        } else {
+          // データが0件の場合
+          console.log("No stats data available yet");
+          setError(null);
         }
       } catch (err) {
         console.error("Exception fetching stats:", err);
