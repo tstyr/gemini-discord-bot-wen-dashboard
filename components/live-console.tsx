@@ -77,7 +77,10 @@ export function LiveConsole() {
   return (
     <Card className="col-span-full">
       <CardHeader>
-        <CardTitle>Live Console</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Live Console</CardTitle>
+          <span className="text-xs text-slate-500">Auto-updates every 10s</span>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="bg-slate-950 rounded-md p-4 h-64 overflow-y-auto font-mono text-xs">

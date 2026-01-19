@@ -28,7 +28,7 @@ export default function InfrastructurePage() {
     };
 
     fetchStatus();
-    const interval = setInterval(fetchStatus, 30000); // Refresh every 30s
+    const interval = setInterval(fetchStatus, 10000); // Refresh every 10s
 
     return () => clearInterval(interval);
   }, []);
@@ -57,6 +57,7 @@ export default function InfrastructurePage() {
       <div>
         <h1 className="text-3xl font-bold text-slate-100">Infrastructure</h1>
         <p className="text-slate-400 mt-1">Koyeb service management</p>
+        <p className="text-xs text-slate-500 mt-1">Auto-updates every 10 seconds</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
