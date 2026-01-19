@@ -47,7 +47,7 @@ export default function AnalyticsPage() {
           // 日付ごとにグループ化
           const dailyStats: { [key: string]: { requests: number; tokens: number } } = {};
           
-          geminiUsage.forEach((record) => {
+          geminiUsage.forEach((record: any) => {
             const date = new Date(record.created_at).toISOString().split("T")[0];
             if (!dailyStats[date]) {
               dailyStats[date] = { requests: 0, tokens: 0 };
@@ -84,7 +84,7 @@ export default function AnalyticsPage() {
           // トラックごとに再生回数をカウント
           const trackCounts: { [key: string]: number } = {};
           
-          musicHistory.forEach((record) => {
+          musicHistory.forEach((record: any) => {
             const title = record.track_title || "Unknown Track";
             trackCounts[title] = (trackCounts[title] || 0) + 1;
           });
