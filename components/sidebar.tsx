@@ -9,13 +9,17 @@ import {
   Server, 
   Settings, 
   ChevronLeft, 
-  ChevronRight 
+  ChevronRight,
+  MessageSquare,
+  ListMusic
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Music, label: "Analytics", href: "/analytics" },
+  { icon: MessageSquare, label: "会話ログ", href: "/dashboard/chat-logs" },
+  { icon: ListMusic, label: "音楽ログ", href: "/dashboard/music-logs" },
   { icon: Server, label: "Infrastructure", href: "/infrastructure" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];

@@ -46,13 +46,15 @@ export default function DashboardPage() {
 
         if (error) {
           console.error("Error fetching stats:", error);
-          setError(error.message);
+          setError(`${error.message} (Code: ${error.code || 'unknown'})`);
         } else if (data) {
           setStats(data);
+          setError(null); // Clear error on success
         }
       } catch (err) {
         console.error("Exception fetching stats:", err);
-        setError(err instanceof Error ? err.message : "Unknown error");
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        setError(`${errorMsg} - Check browser console for details`);
       }
     };
 
@@ -122,9 +124,16 @@ export default function DashboardPage() {
         <div className="bg-red-900/20 border border-red-500 rounded-lg p-4 text-red-200">
           <p className="font-semibold">Connection Error</p>
           <p className="text-sm mt-1">{error}</p>
-          <p className="text-xs mt-2 text-red-300">
-            Make sure your Supabase credentials are set in .env.local
-          </p>
+          <div className="text-xs mt-3 space-y-1 text-red-300">
+            <p>Troubleshooting steps:</p>
+            <ul className="list-disc list-inside ml-2">
+              <li>Check <a href="/debug" className="underline">debug page</a> to verify environment variables</li>
+              <li>Verify Supabase URL format: https://[project-ref].supabase.co</li>
+              <li>Check if Supabase project is active and accessible</li>
+              <li>Open browser console (F12) for detailed error messages</li>
+              <li>Verify RLS is disabled on tables for development</li>
+            </ul>
+          </div>
         </div>
       )}
 
