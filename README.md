@@ -2,6 +2,12 @@
 
 Discord Bot管理コンソール - TrueNAS Scale風デザイン
 
+## 🔗 関連リンク
+
+- **ダッシュボード**: https://gemini-discord-bot-wen-dashboard.vercel.app
+- **Botリポジトリ**: https://github.com/tstyr/discord-gemini-bot
+- **ダッシュボードリポジトリ**: https://github.com/tstyr/gemini-discord-bot-wen-dashboard
+
 ## 技術スタック
 
 - **Framework:** Next.js 14 (App Router)

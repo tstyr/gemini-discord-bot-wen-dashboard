@@ -2,11 +2,18 @@
 
 このガイドでは、discord-gemini-botからSupabaseにデータを送信する実装方法を説明します。
 
+## 対象Botリポジトリ
+
+**Bot**: https://github.com/tstyr/discord-gemini-bot
+
+このBotのコードを修正して、Webダッシュボードにデータを送信できるようにします。
+
 ## 前提条件
 
 - Supabaseプロジェクトが作成済み
 - `database.sql`を実行してテーブルが作成済み
 - Supabase URLとAnon Keyを取得済み
+- discord-gemini-botがローカルまたはサーバーで動作している
 
 ## 1. 必要なパッケージのインストール
 
