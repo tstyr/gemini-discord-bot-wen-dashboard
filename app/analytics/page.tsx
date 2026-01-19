@@ -1,26 +1,107 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart } from "@tremor/react";
+import { supabase } from "@/lib/supabase";
+
+interface GeminiDailyStats {
+  date: string;
+  requests: number;
+  tokens: number;
+}
+
+interface TopTrack {
+  title: string;
+  plays: number;
+}
 
 export default function AnalyticsPage() {
-  const geminiData = [
-    { date: "2026-01-12", requests: 45, characters: 12000 },
-    { date: "2026-01-13", requests: 52, characters: 15000 },
-    { date: "2026-01-14", requests: 48, characters: 13500 },
-    { date: "2026-01-15", requests: 61, characters: 18000 },
-    { date: "2026-01-16", requests: 55, characters: 16000 },
-    { date: "2026-01-17", requests: 67, characters: 19500 },
-    { date: "2026-01-18", requests: 72, characters: 21000 },
-  ];
+  const [geminiData, setGeminiData] = useState<GeminiDailyStats[]>([]);
+  const [topTracks, setTopTracks] = useState<TopTrack[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const topTracks = [
-    { title: "夜に駆ける - YOASOBI", plays: 234 },
-    { title: "残酷な天使のテーゼ", plays: 189 },
-    { title: "紅蓮華 - LiSA", plays: 156 },
-    { title: "Lemon - 米津玄師", plays: 142 },
-    { title: "炎 - LiSA", plays: 128 },
-  ];
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        // Gemini使用統計を取得（過去7日間）
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const { data: geminiUsage, error: geminiError } = await supabase
+          .from("gemini_usage")
+          .select("*")
+          .gte("created_at", sevenDaysAgo.toISOString())
+          .order("created_at", { ascending: true });
+
+        if (!geminiError && geminiUsage) {
+          // 日付ごとにグループ化
+          const dailyStats: { [key: string]: { requests: number; tokens: number } } = {};
+          
+          geminiUsage.forEach((record) => {
+            const date = new Date(record.created_at).toISOString().split("T")[0];
+            if (!dailyStats[date]) {
+              dailyStats[date] = { requests: 0, tokens: 0 };
+            }
+            dailyStats[date].requests += 1;
+            dailyStats[date].tokens += record.total_tokens || 0;
+          });
+
+          const formattedData = Object.entries(dailyStats).map(([date, stats]) => ({
+            date,
+            requests: stats.requests,
+            tokens: stats.tokens,
+          }));
+
+          setGeminiData(formattedData);
+        }
+
+        // 音楽再生履歴を取得（トップ5）
+        const { data: musicHistory, error: musicError } = await supabase
+          .from("music_history")
+          .select("track_title")
+          .order("created_at", { ascending: false })
+          .limit(1000);
+
+        if (!musicError && musicHistory) {
+          // トラックごとに再生回数をカウント
+          const trackCounts: { [key: string]: number } = {};
+          
+          musicHistory.forEach((record) => {
+            const title = record.track_title || "Unknown Track";
+            trackCounts[title] = (trackCounts[title] || 0) + 1;
+          });
+
+          const sortedTracks = Object.entries(trackCounts)
+            .map(([title, plays]) => ({ title, plays }))
+            .sort((a, b) => b.plays - a.plays)
+            .slice(0, 5);
+
+          setTopTracks(sortedTracks);
+        }
+      } catch (error) {
+        console.error("Error fetching analytics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+
+    // 30秒ごとに更新
+    const interval = setInterval(fetchAnalytics, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12 text-slate-400">
+          Loading analytics...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -34,16 +115,22 @@ export default function AnalyticsPage() {
           <CardTitle>Gemini API Usage (Last 7 Days)</CardTitle>
         </CardHeader>
         <CardContent>
-          <AreaChart
-            className="h-72"
-            data={geminiData}
-            index="date"
-            categories={["requests", "characters"]}
-            colors={["blue", "violet"]}
-            valueFormatter={(value) => value.toLocaleString()}
-            showLegend={true}
-            showGridLines={true}
-          />
+          {geminiData.length > 0 ? (
+            <AreaChart
+              className="h-72"
+              data={geminiData}
+              index="date"
+              categories={["requests", "tokens"]}
+              colors={["blue", "violet"]}
+              valueFormatter={(value) => value.toLocaleString()}
+              showLegend={true}
+              showGridLines={true}
+            />
+          ) : (
+            <div className="h-72 flex items-center justify-center text-slate-500">
+              No Gemini usage data available
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -52,19 +139,25 @@ export default function AnalyticsPage() {
           <CardTitle>Top Played Tracks</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {topTracks.map((track, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold">
-                    {index + 1}
+          {topTracks.length > 0 ? (
+            <div className="space-y-4">
+              {topTracks.map((track, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </div>
+                    <span className="text-slate-200">{track.title}</span>
                   </div>
-                  <span className="text-slate-200">{track.title}</span>
+                  <div className="text-slate-400">{track.plays} plays</div>
                 </div>
-                <div className="text-slate-400">{track.plays} plays</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-slate-500">
+              No music playback history available
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

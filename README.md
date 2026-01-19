@@ -35,38 +35,15 @@ cp .env.local.example .env.local
 
 ### 3. Supabaseデータベースのセットアップ
 
-Supabaseプロジェクトで以下のSQLを実行してください:
+`database.sql` ファイルの内容をSupabaseプロジェクトで実行してください。
 
-```sql
--- システムメトリクス
-CREATE TABLE system_stats (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  cpu_usage NUMERIC, ram_rss NUMERIC, ram_heap NUMERIC,
-  ping_gateway INT, ping_lavalink INT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- アクティブセッション（音楽再生状況）
-CREATE TABLE active_sessions (
-  guild_id TEXT PRIMARY KEY,
-  track_title TEXT, position_ms BIGINT, duration_ms BIGINT,
-  is_playing BOOLEAN, updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 遠隔命令キュー
-CREATE TABLE command_queue (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  command TEXT NOT NULL, payload JSONB,
-  status TEXT DEFAULT 'pending',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Botログ
-CREATE TABLE bot_logs (
-  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  level TEXT, message TEXT, created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
+主要なテーブル:
+- `system_stats`: CPU/RAM/Pingなどのシステムメトリクス
+- `active_sessions`: 音楽再生セッション情報
+- `command_queue`: ダッシュボードからBotへの遠隔命令
+- `bot_logs`: Botのログメッセージ
+- `gemini_usage`: Gemini API使用統計（リクエスト数、トークン数）
+- `music_history`: 音楽再生履歴
 
 ### 4. Supabase Realtimeの有効化
 
@@ -75,6 +52,8 @@ Supabaseダッシュボードで以下のテーブルのRealtimeを有効にし�
 - `active_sessions`
 - `command_queue`
 - `bot_logs`
+- `gemini_usage`
+- `music_history`
 
 ### 5. 開発サーバーの起動
 
@@ -92,8 +71,9 @@ npm run dev
 - ライブコンソールログ
 
 ### Analytics (`/analytics`)
-- Gemini API使用量の可視化
-- 人気曲ランキング
+- Gemini API使用量の可視化（過去7日間）
+- 人気曲ランキング（トップ5）
+- リアルタイムデータ更新
 
 ### Infrastructure (`/infrastructure`)
 - Koyebサービスステータス

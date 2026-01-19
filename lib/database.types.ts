@@ -107,6 +107,67 @@ export interface Database {
           created_at?: string
         }
       }
+      gemini_usage: {
+        Row: {
+          id: number
+          guild_id: string | null
+          user_id: string | null
+          prompt_tokens: number | null
+          completion_tokens: number | null
+          total_tokens: number | null
+          model: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: never
+          guild_id?: string | null
+          user_id?: string | null
+          prompt_tokens?: number | null
+          completion_tokens?: number | null
+          total_tokens?: number | null
+          model?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: never
+          guild_id?: string | null
+          user_id?: string | null
+          prompt_tokens?: number | null
+          completion_tokens?: number | null
+          total_tokens?: number | null
+          model?: string | null
+          created_at?: string
+        }
+      }
+      music_history: {
+        Row: {
+          id: number
+          guild_id: string | null
+          track_title: string | null
+          track_url: string | null
+          duration_ms: number | null
+          requested_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: never
+          guild_id?: string | null
+          track_title?: string | null
+          track_url?: string | null
+          duration_ms?: number | null
+          requested_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: never
+          guild_id?: string | null
+          track_title?: string | null
+          track_url?: string | null
+          duration_ms?: number | null
+          requested_by?: string | null
+          created_at?: string
+        }
+      }
     }
   }
 }
