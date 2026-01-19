@@ -85,9 +85,9 @@ export function LiveConsole() {
       <CardContent>
         <div className="bg-slate-950 rounded-md p-4 h-64 overflow-y-auto font-mono text-xs">
           {loading ? (
-            <div className="text-slate-500 text-center py-8">Loading logs...</div>
+            <div className="text-slate-500 text-center py-8">読み込み中...</div>
           ) : logs.length === 0 ? (
-            <div className="text-slate-500 text-center py-8">No logs available</div>
+            <div className="text-slate-500 text-center py-8">データ受信待ち...</div>
           ) : (
             logs.map((log) => (
               <div key={log.id} className="mb-2 flex items-start gap-2">

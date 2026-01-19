@@ -143,7 +143,7 @@ export default function DashboardPage() {
 
       {loading ? (
         <div className="text-center py-12 text-slate-400">
-          Loading data...
+          読み込み中...
         </div>
       ) : (
         <>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
             </h2>
             {sessions.length === 0 ? (
               <div className="text-center py-12 text-slate-500">
-                No active sessions
+                データ受信待ち...
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

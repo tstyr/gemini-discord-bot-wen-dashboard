@@ -115,7 +115,7 @@ export default function AnalyticsPage() {
     return (
       <div className="p-6">
         <div className="text-center py-12 text-slate-400">
-          Loading analytics...
+          読み込み中...
         </div>
       </div>
     );
@@ -150,7 +150,7 @@ export default function AnalyticsPage() {
             />
           ) : (
             <div className="h-72 flex items-center justify-center text-slate-500">
-              No Gemini usage data available
+              データ受信待ち...
             </div>
           )}
         </CardContent>
@@ -177,7 +177,7 @@ export default function AnalyticsPage() {
             </div>
           ) : (
             <div className="py-8 text-center text-slate-500">
-              No music playback history available
+              データ受信待ち...
             </div>
           )}
         </CardContent>

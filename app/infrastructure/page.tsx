@@ -70,7 +70,7 @@ export default function InfrastructurePage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {fetchingStatus ? (
-              <div className="text-slate-400 text-sm">Loading status...</div>
+              <div className="text-slate-400 text-sm">読み込み中...</div>
             ) : status ? (
               <>
                 <div className="flex items-center justify-between">
@@ -107,7 +107,7 @@ export default function InfrastructurePage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {fetchingStatus ? (
-              <div className="text-slate-400 text-sm">Loading info...</div>
+              <div className="text-slate-400 text-sm">読み込み中...</div>
             ) : status ? (
               <>
                 <div className="flex items-center justify-between">

@@ -71,7 +71,7 @@ export default function ChatHistoryPage() {
     return (
       <div className="p-6">
         <h1 className="text-3xl font-bold text-slate-100 mb-6">Chat History</h1>
-        <div className="text-center py-12 text-slate-400">Loading...</div>
+        <div className="text-center py-12 text-slate-400">読み込み中...</div>
       </div>
     );
   }
@@ -98,7 +98,7 @@ export default function ChatHistoryPage() {
 
       {logs.length === 0 ? (
         <div className="text-center py-12 text-slate-500">
-          No chat logs yet
+          データ受信待ち...
         </div>
       ) : (
         <>
