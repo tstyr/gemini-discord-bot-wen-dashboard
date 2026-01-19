@@ -1,0 +1,5 @@
+# Bot Integration Requirements
+# BotからSupabaseダッシュボードにデータを送信するための依存関係
+
+supabase>=2.0.0
+python-dotenv>=1.0.0

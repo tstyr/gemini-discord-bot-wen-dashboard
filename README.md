@@ -97,10 +97,51 @@ Vercelダッシュボードで環境変数を設定してデプロイしてく�
 
 ## 通信フロー
 
+### ダッシュボード → Bot
 1. ダッシュボードのボタン操作 → `command_queue` テーブルに `INSERT`
 2. Bot側が `command_queue` を購読して命令を実行
 3. Bot側が実行結果を `command_queue` の `status` を更新
 4. ダッシュボードがRealtime経由で通知を受け取りトースト表示
+
+### Bot → ダッシュボード
+1. Bot側がイベント発生時にSupabaseにデータを送信
+2. ダッシュボードがRealtime経由でリアルタイム更新
+
+詳細は `bot-integration/README.md` を参照してください。
+
+## Bot統合
+
+Discord Botからダッシュボードにデータを送信する方法：
+
+1. **統合ライブラリのインストール**
+   ```bash
+   cd bot-integration
+   pip install -r requirements.txt
+   ```
+
+2. **環境変数の設定**
+   ```bash
+   cp bot-integration/.env.example bot-integration/.env
+   # .envファイルにSupabase認証情報を設定
+   ```
+
+3. **Botコードに統合**
+   ```python
+   from supabase_client import SupabaseDashboard
+   
+   dashboard = SupabaseDashboard()
+   
+   # システム統計を送信
+   await dashboard.update_system_stats(cpu_usage=45.2, ...)
+   
+   # 音楽再生を記録
+   await dashboard.log_music_play(guild_id="...", track_title="...", ...)
+   
+   # Gemini使用を記録
+   await dashboard.log_gemini_usage(guild_id="...", user_id="...", ...)
+   ```
+
+詳細な統合ガイドは `bot-integration/README.md` を参照してください。
 
 ## ライセンス
 
