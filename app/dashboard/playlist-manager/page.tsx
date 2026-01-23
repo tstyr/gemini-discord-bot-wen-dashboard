@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Database } from '@/lib/database.types'
 
@@ -29,13 +29,7 @@ export default function PlaylistManager() {
     addedById: 'admin'
   })
 
-  useEffect(() => {
-    fetchPlaylists()
-    const interval = setInterval(fetchPlaylists, 30000) // 30秒ごとに更新
-    return () => clearInterval(interval)
-  }, [userFilter])
-
-  async function fetchPlaylists() {
+  const fetchPlaylists = useCallback(async () => {
     try {
       // プレイリストを取得
       let query = supabase
@@ -58,7 +52,7 @@ export default function PlaylistManager() {
 
       // 各プレイリストの曲を取得
       const playlistsWithTracks = await Promise.all(
-        playlistsData.map(async (playlist) => {
+        playlistsData.map(async (playlist: Playlist) => {
           const { data: tracksData, error: tracksError } = await supabase
             .from('playlist_tracks')
             .select('*')
@@ -67,7 +61,7 @@ export default function PlaylistManager() {
 
           if (tracksError) {
             console.error('Error fetching tracks:', tracksError)
-            return { ...playlist, tracks: [] }
+            return { ...playlist, tracks: [] as PlaylistTrack[] }
           }
 
           return { ...playlist, tracks: tracksData || [] }
@@ -80,7 +74,13 @@ export default function PlaylistManager() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userFilter])
+
+  useEffect(() => {
+    fetchPlaylists()
+    const interval = setInterval(fetchPlaylists, 30000) // 30秒ごとに更新
+    return () => clearInterval(interval)
+  }, [fetchPlaylists])
 
   async function updatePlaylistName(playlistId: string, newName: string) {
     try {
@@ -89,7 +89,7 @@ export default function PlaylistManager() {
         .update({ 
           playlist_name: newName,
           updated_at: new Date().toISOString()
-        })
+        } as Database['public']['Tables']['playlists']['Update'])
         .eq('id', playlistId)
 
       if (error) throw error
@@ -126,7 +126,7 @@ export default function PlaylistManager() {
     try {
       const { error } = await supabase
         .from('playlist_tracks')
-        .update({ track_title: newTitle })
+        .update({ track_title: newTitle } as Database['public']['Tables']['playlist_tracks']['Update'])
         .eq('id', trackId)
 
       if (error) throw error
@@ -176,7 +176,7 @@ export default function PlaylistManager() {
           added_by_id: addTrackForm.addedById,
           duration_ms: 0,
           position: 0
-        })
+        } as Database['public']['Tables']['playlist_tracks']['Insert'])
 
       if (error) throw error
 

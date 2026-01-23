@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { getBotLogs } from '@/lib/supabase'
 import { Database } from '@/lib/database.types'
 
@@ -11,13 +11,7 @@ export default function BotLogs() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('')
 
-  useEffect(() => {
-    fetchLogs()
-    const interval = setInterval(fetchLogs, 10000) // 10秒ごとに更新
-    return () => clearInterval(interval)
-  }, [filter])
-
-  async function fetchLogs() {
+  const fetchLogs = useCallback(async () => {
     try {
       const data = await getBotLogs(100, filter || undefined)
       setLogs(data)
@@ -26,7 +20,13 @@ export default function BotLogs() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter])
+
+  useEffect(() => {
+    fetchLogs()
+    const interval = setInterval(fetchLogs, 10000) // 10秒ごとに更新
+    return () => clearInterval(interval)
+  }, [fetchLogs])
 
   const getLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
