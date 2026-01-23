@@ -23,6 +23,7 @@ const menuItems = [
   { icon: ListMusic, label: "Music History", href: "/dashboard/music" },
   { icon: MessageSquare, label: "Chat Logs", href: "/dashboard/chat-logs" },
   { icon: ListMusic, label: "Music Logs", href: "/dashboard/music-logs" },
+  { icon: ListMusic, label: "Playlist Manager", href: "/dashboard/playlist-manager" },
   { icon: Server, label: "Infrastructure", href: "/infrastructure" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];

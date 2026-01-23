@@ -280,6 +280,79 @@ export interface Database {
           completed_at?: string | null
         }
       }
+      playlists: {
+        Row: {
+          id: string
+          user_id: string
+          user_name: string
+          playlist_name: string
+          description: string | null
+          is_public: boolean
+          recorded_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          user_name: string
+          playlist_name: string
+          description?: string | null
+          is_public?: boolean
+          recorded_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          user_name?: string
+          playlist_name?: string
+          description?: string | null
+          is_public?: boolean
+          recorded_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      playlist_tracks: {
+        Row: {
+          id: string
+          playlist_id: string
+          track_title: string
+          track_url: string
+          duration_ms: number
+          added_by: string
+          added_by_id: string
+          position: number
+          recorded_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          playlist_id: string
+          track_title: string
+          track_url: string
+          duration_ms?: number
+          added_by: string
+          added_by_id: string
+          position?: number
+          recorded_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          playlist_id?: string
+          track_title?: string
+          track_url?: string
+          duration_ms?: number
+          added_by?: string
+          added_by_id?: string
+          position?: number
+          recorded_at?: string
+          created_at?: string
+        }
+      }
     }
   }
 }
