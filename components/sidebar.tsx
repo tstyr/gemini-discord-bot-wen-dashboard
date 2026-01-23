@@ -21,6 +21,8 @@ const menuItems = [
   { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: MessageSquare, label: "Chat History", href: "/dashboard/chat" },
   { icon: ListMusic, label: "Music History", href: "/dashboard/music" },
+  { icon: MessageSquare, label: "Chat Logs", href: "/dashboard/chat-logs" },
+  { icon: ListMusic, label: "Music Logs", href: "/dashboard/music-logs" },
   { icon: Server, label: "Infrastructure", href: "/infrastructure" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];

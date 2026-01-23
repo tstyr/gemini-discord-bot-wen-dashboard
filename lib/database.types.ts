@@ -11,30 +11,182 @@ export interface Database {
     Tables: {
       system_stats: {
         Row: {
-          id: number
-          cpu_usage: number | null
-          ram_rss: number | null
-          ram_heap: number | null
-          ping_gateway: number | null
-          ping_lavalink: number | null
+          id: string
+          bot_id: string
+          cpu_usage: number
+          ram_usage: number
+          memory_rss: number
+          memory_heap: number
+          ping_gateway: number
+          ping_lavalink: number
+          server_count: number
+          guild_count: number
+          uptime: number
+          status: string
+          recorded_at: string
+          updated_at: string
           created_at: string
         }
         Insert: {
-          id?: never
-          cpu_usage?: number | null
-          ram_rss?: number | null
-          ram_heap?: number | null
-          ping_gateway?: number | null
-          ping_lavalink?: number | null
+          id?: string
+          bot_id?: string
+          cpu_usage?: number
+          ram_usage?: number
+          memory_rss?: number
+          memory_heap?: number
+          ping_gateway?: number
+          ping_lavalink?: number
+          server_count?: number
+          guild_count?: number
+          uptime?: number
+          status?: string
+          recorded_at?: string
+          updated_at?: string
           created_at?: string
         }
         Update: {
-          id?: never
-          cpu_usage?: number | null
-          ram_rss?: number | null
-          ram_heap?: number | null
-          ping_gateway?: number | null
-          ping_lavalink?: number | null
+          id?: string
+          bot_id?: string
+          cpu_usage?: number
+          ram_usage?: number
+          memory_rss?: number
+          memory_heap?: number
+          ping_gateway?: number
+          ping_lavalink?: number
+          server_count?: number
+          guild_count?: number
+          uptime?: number
+          status?: string
+          recorded_at?: string
+          updated_at?: string
+          created_at?: string
+        }
+      }
+      conversation_logs: {
+        Row: {
+          id: string
+          user_id: string
+          user_name: string
+          prompt: string
+          response: string
+          recorded_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          user_name: string
+          prompt: string
+          response: string
+          recorded_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          user_name?: string
+          prompt?: string
+          response?: string
+          recorded_at?: string
+          created_at?: string
+        }
+      }
+      music_logs: {
+        Row: {
+          id: string
+          guild_id: string
+          song_title: string
+          requested_by: string
+          requested_by_id: string
+          recorded_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          guild_id: string
+          song_title: string
+          requested_by: string
+          requested_by_id: string
+          recorded_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          guild_id?: string
+          song_title?: string
+          requested_by?: string
+          requested_by_id?: string
+          recorded_at?: string
+          created_at?: string
+        }
+      }
+      music_history: {
+        Row: {
+          id: string
+          guild_id: string
+          track_title: string
+          track_url: string | null
+          duration_ms: number
+          requested_by: string
+          requested_by_id: string
+          recorded_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          guild_id: string
+          track_title: string
+          track_url?: string | null
+          duration_ms?: number
+          requested_by: string
+          requested_by_id: string
+          recorded_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          guild_id?: string
+          track_title?: string
+          track_url?: string | null
+          duration_ms?: number
+          requested_by?: string
+          requested_by_id?: string
+          recorded_at?: string
+          created_at?: string
+        }
+      }
+      gemini_usage: {
+        Row: {
+          id: string
+          guild_id: string
+          user_id: string
+          prompt_tokens: number
+          completion_tokens: number
+          total_tokens: number
+          model: string
+          recorded_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          guild_id: string
+          user_id: string
+          prompt_tokens?: number
+          completion_tokens?: number
+          total_tokens?: number
+          model?: string
+          recorded_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          guild_id?: string
+          user_id?: string
+          prompt_tokens?: number
+          completion_tokens?: number
+          total_tokens?: number
+          model?: string
+          recorded_at?: string
           created_at?: string
         }
       }
@@ -42,130 +194,90 @@ export interface Database {
         Row: {
           guild_id: string
           track_title: string | null
-          position_ms: number | null
-          duration_ms: number | null
-          is_playing: boolean | null
+          position_ms: number
+          duration_ms: number
+          is_playing: boolean
+          voice_members_count: number
           updated_at: string
+          created_at: string
         }
         Insert: {
           guild_id: string
           track_title?: string | null
-          position_ms?: number | null
-          duration_ms?: number | null
-          is_playing?: boolean | null
+          position_ms?: number
+          duration_ms?: number
+          is_playing?: boolean
+          voice_members_count?: number
           updated_at?: string
+          created_at?: string
         }
         Update: {
           guild_id?: string
           track_title?: string | null
-          position_ms?: number | null
-          duration_ms?: number | null
-          is_playing?: boolean | null
+          position_ms?: number
+          duration_ms?: number
+          is_playing?: boolean
+          voice_members_count?: number
           updated_at?: string
-        }
-      }
-      command_queue: {
-        Row: {
-          id: string
-          command: string
-          payload: Json | null
-          status: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          command: string
-          payload?: Json | null
-          status?: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          command?: string
-          payload?: Json | null
-          status?: string
           created_at?: string
         }
       }
       bot_logs: {
         Row: {
-          id: number
-          level: string | null
-          message: string | null
+          id: string
+          level: string
+          message: string
+          scope: string
           created_at: string
         }
         Insert: {
-          id?: never
-          level?: string | null
-          message?: string | null
+          id?: string
+          level: string
+          message: string
+          scope?: string
           created_at?: string
         }
         Update: {
-          id?: never
-          level?: string | null
-          message?: string | null
+          id?: string
+          level?: string
+          message?: string
+          scope?: string
           created_at?: string
         }
       }
-      gemini_usage: {
+      command_queue: {
         Row: {
-          id: number
-          guild_id: string | null
-          user_id: string | null
-          prompt_tokens: number | null
-          completion_tokens: number | null
-          total_tokens: number | null
-          model: string | null
+          id: string
+          command_type: string
+          payload: Json
+          status: string
+          result: string | null
+          error: string | null
           created_at: string
+          updated_at: string
+          completed_at: string | null
         }
         Insert: {
-          id?: never
-          guild_id?: string | null
-          user_id?: string | null
-          prompt_tokens?: number | null
-          completion_tokens?: number | null
-          total_tokens?: number | null
-          model?: string | null
+          id?: string
+          command_type: string
+          payload?: Json
+          status?: string
+          result?: string | null
+          error?: string | null
           created_at?: string
+          updated_at?: string
+          completed_at?: string | null
         }
         Update: {
-          id?: never
-          guild_id?: string | null
-          user_id?: string | null
-          prompt_tokens?: number | null
-          completion_tokens?: number | null
-          total_tokens?: number | null
-          model?: string | null
+          id?: string
+          command_type?: string
+          payload?: Json
+          status?: string
+          result?: string | null
+          error?: string | null
           created_at?: string
-        }
-      }
-      music_history: {
-        Row: {
-          id: number
-          guild_id: string | null
-          track_title: string | null
-          track_url: string | null
-          duration_ms: number | null
-          requested_by: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: never
-          guild_id?: string | null
-          track_title?: string | null
-          track_url?: string | null
-          duration_ms?: number | null
-          requested_by?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: never
-          guild_id?: string | null
-          track_title?: string | null
-          track_url?: string | null
-          duration_ms?: number | null
-          requested_by?: string | null
-          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
         }
       }
     }
