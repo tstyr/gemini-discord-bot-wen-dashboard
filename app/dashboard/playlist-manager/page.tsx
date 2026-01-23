@@ -32,8 +32,8 @@ export default function PlaylistManager() {
   const fetchPlaylists = useCallback(async () => {
     try {
       // プレイリストを取得
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let query = (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      let query = supabase
         .from('playlists')
         .select('*')
         .order('recorded_at', { ascending: false })
@@ -54,8 +54,8 @@ export default function PlaylistManager() {
       // 各プレイリストの曲を取得
       const playlistsWithTracks = await Promise.all(
         playlistsData.map(async (playlist: Playlist) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { data: tracksData, error: tracksError } = await (supabase as any)
+          // @ts-ignore - Supabase型推論の問題を回避
+          const { data: tracksData, error: tracksError } = await supabase
             .from('playlist_tracks')
             .select('*')
             .eq('playlist_id', playlist.id)
@@ -86,8 +86,8 @@ export default function PlaylistManager() {
 
   async function updatePlaylistName(playlistId: string, newName: string) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      const { error } = await supabase
         .from('playlists')
         .update({ 
           playlist_name: newName,
@@ -111,8 +111,8 @@ export default function PlaylistManager() {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      const { error } = await supabase
         .from('playlists')
         .delete()
         .eq('id', playlistId)
@@ -128,8 +128,8 @@ export default function PlaylistManager() {
 
   async function updateTrackTitle(trackId: string, newTitle: string) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      const { error } = await supabase
         .from('playlist_tracks')
         .update({ track_title: newTitle })
         .eq('id', trackId)
@@ -150,8 +150,8 @@ export default function PlaylistManager() {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      const { error } = await supabase
         .from('playlist_tracks')
         .delete()
         .eq('id', trackId)
@@ -172,8 +172,8 @@ export default function PlaylistManager() {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      // @ts-ignore - Supabase型推論の問題を回避
+      const { error } = await supabase
         .from('playlist_tracks')
         .insert({
           playlist_id: addTrackForm.playlistId,
